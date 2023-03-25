@@ -1,0 +1,40 @@
+{
+    "object": "fine-tune",
+    "id": "ft-O9fkhYc757ZMwIKNea6rczgr",
+    "hyperparams": {
+        "n_epochs": 4,
+        "batch_size": null,
+        "prompt_loss_weight": 0.01,
+        "learning_rate_multiplier": null
+    },
+    "organization_id": "org-vbRy5mDY8r5BYWbsihrl619X",
+    "model": "ada",
+    "training_files": [
+        {
+            "object": "file",
+            "id": "file-3dTYlVggpwOemUdvpJR1h5XT",
+            "purpose": "fine-tune",
+            "filename": "dialog-1.jsonl",
+            "bytes": 112,
+            "created_at": 1679254230,
+            "status": "processed",
+            "status_details": null
+        }
+    ],
+    "validation_files": [
+    ],
+    "result_files": [
+    ],
+    "created_at": 1679322609,
+    "updated_at": 1679322609,
+    "status": "pending",
+    "fine_tuned_model": null,
+    "events": [
+        {
+            "object": "fine-tune-event",
+            "level": "info",
+            "message": "Created fine-tune: ft-O9fkhYc757ZMwIKNea6rczgr",
+            "created_at": 1679322610
+        }
+    ]
+}

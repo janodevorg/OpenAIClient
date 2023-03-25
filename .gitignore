@@ -1,0 +1,9 @@
+.build
+.DS_Store
+.swiftpm
+build
+env
+Package.resolved
+xcshareddata
+xcuserdata
+sources/integration-tests/resources/realKeys.json
