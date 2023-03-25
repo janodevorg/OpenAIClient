@@ -3,6 +3,9 @@
 #if os(iOS)
     import UIKit
     public typealias CPImage = UIImage
+#elseif os(tvOS)
+    import UIKit
+    public typealias CPImage = UIImage
 #elseif os(macOS)
     import AppKit
     public typealias CPImage = NSImage

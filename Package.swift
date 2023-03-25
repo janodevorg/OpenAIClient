@@ -5,8 +5,9 @@ let package = Package(
     name: "OpenAIClient",
     platforms: [
         .iOS(.v13), 
-        .macCatalyst(.v13),
-        .macOS(.v12)
+        .macCatalyst(.v13), 
+        .macOS(.v12),
+        .tvOS(.v13)
     ],
     products: [
         .library(name: "OpenAIClient", targets: ["OpenAIClient"]),
@@ -54,7 +55,6 @@ let package = Package(
             name: "UnitTests",
             dependencies: [
                 "OpenAIClient",
-                .product(name: "Atlantis", package: "Atlantis"),
                 .product(name: "DumpLogger", package: "Log")
             ],
             path: "sources/tests"
