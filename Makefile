@@ -46,6 +46,12 @@ keys:
 	echo "JSON file created at $$filename"; \
 	cat $$filename
 
+test:
+	set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "OS=16.2,name=iPhone 14 Pro" -skipPackagePluginValidation | xcpretty
+	set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "platform=macOS,arch=arm64" -skipPackagePluginValidation | xcpretty
+	set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "platform=macOS,arch=arm64,variant=Mac Catalyst" -skipPackagePluginValidation | xcpretty
+	set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)" -skipPackagePluginValidation | xcpretty
+
 requirebrew:
 	@if ! command -v brew &> /dev/null; then echo "Please install brew from https://brew.sh/"; exit 1; fi
 
