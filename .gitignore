@@ -6,4 +6,4 @@ env
 Package.resolved
 xcshareddata
 xcuserdata
-sources/integration-tests/resources/realKeys.json
+Tests/Integration/resources/realKeys.json
