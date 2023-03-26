@@ -14,7 +14,6 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "git@github.com:apple/swift-docc-plugin.git", from: "1.0.0"),
-        .package(url: "git@github.com:janodevorg/Log.git", from: "1.0.0"),
         .package(url: "git@github.com:janodevorg/OpenAIAPI.git", from: "1.0.0"),
         .package(url: "git@github.com:ProxymanApp/atlantis.git", from : "1.21.0"),
         // ↓ 'main' because there is still no version for this fix: https://github.com/realm/SwiftLint/issues/4722
@@ -24,15 +23,23 @@ let package = Package(
         .target(
             name: "OpenAIClient",
             dependencies: [
-                .product(name: "Logger", package: "Log"),
                 .product(name: "OpenAIAPI", package: "OpenAIAPI")
             ],
-            path: "sources/main",
+            path: "Sources",
             exclude: [
-                "MultipartEncoder/LICENSE.txt",
-                "Streaming/LDSwiftEventSource/LICENSE.txt",
-                "Streaming/LDSwiftEventSource/README.md",
-                "Streaming/LDSwiftEventSource/VERSION-3.0.0"
+                "Embedded-Packages/CustomDump/LICENSE.txt",
+                "Embedded-Packages/CustomDump/README.md",
+                "Embedded-Packages/CustomDump/VERSION-0.9.1",
+                "Embedded-Packages/Log/LICENSE.txt",
+                "Embedded-Packages/Log/README.md",
+                "Embedded-Packages/Log/VERSION-1.0.0",
+                "Embedded-Packages/MultipartEncoder/LICENSE.txt",
+                "Embedded-Packages/LDSwiftEventSource/LICENSE.txt",
+                "Embedded-Packages/LDSwiftEventSource/README.md",
+                "Embedded-Packages/LDSwiftEventSource/VERSION-3.0.0",
+                "Embedded-Packages/XCTestDynamicOverlay/LICENSE.txt",
+                "Embedded-Packages/XCTestDynamicOverlay/README.md",
+                "Embedded-Packages/XCTestDynamicOverlay/VERSION-0.8.4"
             ],
             plugins: [
                 // disabling on release because depending on swiftlint would mark the package as unstable
@@ -43,10 +50,9 @@ let package = Package(
             name: "IntegrationTests",
             dependencies: [
                 "OpenAIClient",
-                .product(name: "Atlantis", package: "Atlantis"),
-                .product(name: "DumpLogger", package: "Log")
+                .product(name: "Atlantis", package: "Atlantis")
             ],
-            path: "sources/integration-tests",
+            path: "Tests/Integration",
             resources: [
               .process("resources")
             ]
@@ -54,10 +60,9 @@ let package = Package(
         .testTarget(
             name: "UnitTests",
             dependencies: [
-                "OpenAIClient",
-                .product(name: "DumpLogger", package: "Log")
+                "OpenAIClient"
             ],
-            path: "sources/tests"
+            path: "Tests/Unit"
         )
     ]
 )
