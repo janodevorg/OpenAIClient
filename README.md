@@ -50,6 +50,10 @@ streamClient.start()
 ```
 Call `stop()` to stop streaming or wait until `streamClient.state == .shutdown`.
 
+## Example
+
+Check `Examples/SwiftAI` for a CLI tool that uses [swift-argument-parser](https://github.com/apple/swift-argument-parser). I only implemented completion and streaming completion but it was quite easy –now I’m wondering if I should go on or ask ChatGPT to do it. :D
+
 ## Integration tests
 
 The folder sources/integration-tests contains tests that make network calls. They are disabled by default because they need valid credentials and may alter data in your organization. I suggest you run them manually for debugging or to see this library in action.
