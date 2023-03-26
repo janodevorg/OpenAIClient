@@ -52,7 +52,7 @@ Call `stop()` to stop streaming or wait until `streamClient.state == .shutdown`.
 
 ## Example
 
-Check `Examples/SwiftAI` for a CLI tool that uses [swift-argument-parser](https://github.com/apple/swift-argument-parser). I only implemented completion and streaming completion but it was quite easy –now I’m wondering if I should go on or ask ChatGPT to do it. :D
+Check [Examples/SwiftAI](https://github.com/janodevorg/OpenAIClient/tree/main/Examples/SwiftAI) for a CLI tool that uses [swift-argument-parser](https://github.com/apple/swift-argument-parser). I only implemented completion and streaming completion but it was quite easy –now I’m wondering if I should go on or ask ChatGPT to do it.
 
 ## Integration tests
 
