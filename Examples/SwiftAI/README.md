@@ -11,7 +11,7 @@ alias ai='./.build/arm64-apple-macosx/debug/SwiftAI'
 ai completion "write a 5 line poem about spring" --model "text-davinci-002"
 ```
 
-First time you’ll get this error below, so do what it says.
+First time you’ll get this instruction to fill-in your credentials.
 ```
 Error: 👉 Please edit the file Sources/SwiftAI/makeClient.swift with your OpenAI credentials.
 ```
