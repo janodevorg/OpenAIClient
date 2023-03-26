@@ -10,7 +10,7 @@ Swift implementation of the OpenAI API partially generated from the OpenAI defin
 let package = Package(
     ...
     dependencies: [
-        .package(url: "git@github.com:OpenAIClient/OpenAIClient.git", from: "1.0.0")
+        .package(url: "git@github.com:janodevorg/OpenAIClient.git", from: "1.0.0")
     ],
     targets: [
         .target(
