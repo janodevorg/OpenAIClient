@@ -1,7 +1,7 @@
 import OpenAIClient
 
-//let apiKey = "" // get it from https://platform.openai.com/account/api-keys
-//let orgId = ""  // get it from https://platform.openai.com/account/org-settings
+let apiKey = "" // get it from https://platform.openai.com/account/api-keys
+let orgId = ""  // get it from https://platform.openai.com/account/org-settings
 
 struct MissingCredentials: Error, CustomStringConvertible {
     var description: String {

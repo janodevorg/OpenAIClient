@@ -9,10 +9,13 @@ struct SwiftAI: AsyncParsableCommand {
     )
 
     mutating func run() async throws {
-        print("BANANA")
         guard #available(macOS 12.0, *) else {
           print("'swift-ai' isn't supported on this platform.")
           return
         }
+        guard !apiKey.isEmpty && !orgId.isEmpty else {
+            throw MissingCredentials()
+        }
+        print("Try --help")
     }
 }

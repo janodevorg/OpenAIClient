@@ -28,7 +28,7 @@ Build complete! (9.76s)
 ./.build/arm64-apple-macosx/debug/SwiftAI
 
 % alias ai='./.build/arm64-apple-macosx/debug/SwiftAI'
-% ai --help
+% ai
 % ai --help
 Compiling plugin GenerateManual...
 Building for debugging...
