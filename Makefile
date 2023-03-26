@@ -36,7 +36,7 @@ keys:
 	echo "Please enter your hostname if you intend to debug in Proxyman (otherwise press enter)"; \
 	echo "(you can find it at Apple > System Settings > General > Sharing > Local hostname)"; \
 	read hostName; \
-	filename="sources/integration-tests/resources/realKeys.json"; \
+	filename="Tests/Integration/resources/realKeys.json"; \
 	echo '{' > $$filename; \
 	echo '    "apiKey": "'$$apiKey'",' >> $$filename; \
 	echo '    "organizationId": "'$$organizationId'",' >> $$filename; \
