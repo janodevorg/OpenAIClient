@@ -1,6 +1,6 @@
 # SwiftAI
 
-An example of CLI tool using the OpenAIClient library. I only implemented completion and stream-completion, but it seems trivial to implement the rest.
+Example of CLI tool using the OpenAIClient library. I only implemented commands for completion and stream-completion.
 
 ## How to run
 
