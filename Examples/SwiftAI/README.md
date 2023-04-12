@@ -9,6 +9,7 @@ TLDR
 swift run
 alias ai='./.build/arm64-apple-macosx/debug/SwiftAI'
 ai completion "write a 5 line poem about spring" --model "text-davinci-002"
+ai stream-completion "write a 5 line poem about spring" --model "text-davinci-002"
 ```
 
 First time you’ll get this instruction to fill-in your credentials.

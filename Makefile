@@ -1,6 +1,6 @@
 #!/bin/bash -e -o pipefail
 
-.PHONY: docc keys requirebrew requirejq
+.PHONY: docc credentials requirebrew requirejq
 
 docc: requirejq
 	rm -rf docs
@@ -19,7 +19,7 @@ docc: requirejq
 	@echo "Check https://janodevorg.github.io/OpenAIClient/documentation/openaiclient/"
 	@echo ""
 
-keys:
+credentials:
 	@echo
 	@echo "This script creates the credentials file that enables integration tests."
 	@echo "These tests are useful for debugging and to test this library, but note"
@@ -36,7 +36,7 @@ keys:
 	echo "Please enter your hostname if you intend to debug in Proxyman (otherwise press enter)"; \
 	echo "(you can find it at Apple > System Settings > General > Sharing > Local hostname)"; \
 	read hostName; \
-	filename="Tests/Integration/resources/realKeys.json"; \
+	filename="Tests/Integration/resources/credentials.json"; \
 	echo '{' > $$filename; \
 	echo '    "apiKey": "'$$apiKey'",' >> $$filename; \
 	echo '    "organizationId": "'$$organizationId'",' >> $$filename; \

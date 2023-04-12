@@ -3,6 +3,7 @@ import Dispatch
 import Foundation
 import OpenAIClient
 
+/// Request a completion.
 struct Completion: AsyncParsableCommand {
     static let configuration = CommandConfiguration(abstract:
         """
@@ -14,7 +15,7 @@ struct Completion: AsyncParsableCommand {
     @Argument(help: "The phrase to complete.")
     var prompt: String
 
-    @Option(help: "A model able to complete sentences. e.g. text-davinci-003")
+    @Option(help: "A model able to complete sentences. e.g. text-davinci-002")
     var model: String?
 
     @Option(help: "Number of tokens for this completion. In the new models, prompt + answer can’t exceed 4096 tokens.")
@@ -30,7 +31,7 @@ struct Completion: AsyncParsableCommand {
     }
 
     mutating func run() async throws {
-        let model = self.model ?? "text-davinci-003"
+        let model = self.model ?? "text-davinci-002"
         let maxTokens = self.maxTokens ?? 3000
 
         let completion = try await makeClient().completions(request:

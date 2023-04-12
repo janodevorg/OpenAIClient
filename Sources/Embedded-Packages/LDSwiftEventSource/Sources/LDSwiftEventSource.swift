@@ -286,6 +286,7 @@ final class EventSourceDelegate: NSObject, URLSessionDataDelegate {
             if dispatchError(error: UnsuccessfulResponseError(responseCode: httpResponse.statusCode)) == .shutdown {
                 log.info("Connection has been explicitly shut down by error handler")
                 readyState = .shutdown
+                config.handler.onClosed()
             }
             completionHandler(.cancel)
         }

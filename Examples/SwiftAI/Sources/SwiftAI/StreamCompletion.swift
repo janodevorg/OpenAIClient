@@ -1,8 +1,10 @@
 import ArgumentParser
 import Dispatch
 import Foundation
+import OpenAIAPI
 import OpenAIClient
 
+/// Request a completion streaming with AsyncStream.
 struct StreamCompletion: AsyncParsableCommand {
     static let configuration = CommandConfiguration(abstract:
         """
@@ -14,7 +16,7 @@ struct StreamCompletion: AsyncParsableCommand {
     @Argument(help: "The phrase to complete.")
     var prompt: String
 
-    @Option(help: "A model able to complete sentences. e.g. text-davinci-003")
+    @Option(help: "A model able to complete sentences. e.g. text-davinci-002")
     var model: String?
 
     @Option(help: "Number of tokens for this completion. In the new models, prompt + answer can’t exceed 4096 tokens.")
@@ -30,30 +32,27 @@ struct StreamCompletion: AsyncParsableCommand {
     }
 
     mutating func run() async throws {
-        let model = self.model ?? "text-davinci-003"
-        let maxTokens = self.maxTokens ?? 3000
-
-        let chunkHandler: ([CompletionChunk]) throws -> Void = { [json] chunks in
-            if json {
-                try chunks
-                    .map { try encode(encodable: $0) ?? "" }
-                    .forEach { print($0) }
-            } else {
-                chunks
-                    .map { $0.firstChoice }
-                    .joined(separator: "")
-                    .forEach { print($0, separator: "", terminator: "") }
+        let request = CreateCompletionRequest(
+            model: model ?? "text-davinci-002",
+            prompt: .string(prompt),
+            maxTokens: maxTokens ?? 3000,
+            isStream: true
+        )
+        let stream = try makeClient().streamingCompletion(request: request)
+        for await chunks in stream {
+            for chunk in chunks {
+                let text = json ? try toJsonString(chunk) : toString(chunk)
+                print(text, separator: "", terminator: "")
             }
         }
-
-        let streamClient = try makeClient().streamingCompletion(
-            request: .init(model: model, prompt: .string(prompt), maxTokens: maxTokens),
-            streamListener: chunkHandler
-        )
-        streamClient.start()
-        while streamClient.state != .shutdown {
-            try await Task.sleep(for: .milliseconds(100))
-        }
         print()
+    }
+    
+    private func toJsonString(_ chunk: CompletionChunk) throws -> String {
+        try encode(encodable: chunk) ?? ""
+    }
+    
+    private func toString(_ chunk: CompletionChunk) -> String {
+        chunk.firstChoice
     }
 }

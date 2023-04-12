@@ -23,7 +23,7 @@ final class UsageTests: BaseTests {
             return streamClient.state == .shutdown
         })
         let expectation = XCTNSPredicateExpectation(predicate: predicate, object: streamClient)
-        let res = XCTWaiter.wait(for: [expectation], timeout: 20.0)
+        let res = await XCTWaiter.fulfillment(of: [expectation], timeout: 20.0)
         if res != XCTWaiter.Result.completed {
             XCTFail("Expected the event source to finish with shutdown")
          }

@@ -1,7 +1,7 @@
 import Foundation
 import OpenAIAPI
 
-public protocol OpenAIClientProtocol: ObservableObject {
+public protocol OpenAIClientProtocol {
     /// True if credentials are not nil or empty.
     var hasValidCredentials: Bool { get }
 
@@ -10,7 +10,7 @@ public protocol OpenAIClientProtocol: ObservableObject {
      - Parameter apiKey: API Key from https://platform.openai.com/account/api-keys
      - Parameter organizationId: Organization ID from https://platform.openai.com/account/org-settings
     */
-    func configure(apiKey: String, companyKey: String)
+    func configure(apiKey: String, organizationId: String) -> Self
 
     /// Runs an authenticated call to check if the credentials are accepted by the server.
     func tryAuthenticatedCall() async throws
@@ -58,6 +58,15 @@ public protocol OpenAIClientProtocol: ObservableObject {
         request: CreateCompletionRequest,
         streamListener: @escaping ([CompletionChunk]) throws -> Void
     ) throws -> StreamingClient
+    
+    /**
+     Creates a **streaming** completion.
+     - Parameters:
+       - request: Completion parameters. `isStream` parameter will be true regardless of the value.
+     - Returns: Stream.
+     - Throws: APIError
+     */
+    func streamingCompletion(request: CreateCompletionRequest) throws -> AsyncStream<[CompletionChunk]>
 
     // MARK: - Chat
 
@@ -86,6 +95,19 @@ public protocol OpenAIClientProtocol: ObservableObject {
         conversation: [ChatCompletionRequestMessage]
     ) throws -> StreamingClient
 
+    /**
+     Creates a **streaming** completion for the chat message.
+     - Parameters:
+       - modelId: ID of the model to use. See the [model endpoint compatibility](https://platform.openai.com/docs/models/model-endpoint-compatibility) table for details on which models work with the Chat API.
+       - conversation: Previous chat messages are re-send here to keep track of the conversation.
+     - Returns: Stream.
+     - Throws: APIError
+     */
+    func streamingChatCompletion(
+        modelId: String,
+        conversation: [ChatCompletionRequestMessage]
+    ) throws -> AsyncStream<[ChatChunk]>
+    
     // MARK: - Edit
 
     /// Given a prompt and an instruction, the model will return an edited version of the prompt.
@@ -252,7 +274,8 @@ public protocol OpenAIClientProtocol: ObservableObject {
 
     /**
      Get fine-grained status updates for a fine-tune job.
-     - Parameter fine_tune_id: The ID of the fine-tune job to get events for.
+     - Parameter id: The ID of the fine-tune job to get events for.
+     - Returns: Streaming control that lets you start/stop the streaming process.
      - Throws: APIError
      */
     func streamingListFineTuneEvents(
@@ -260,6 +283,14 @@ public protocol OpenAIClientProtocol: ObservableObject {
         streamListener: @escaping ([FineTuneEvent]) throws -> Void
     ) async throws -> StreamingClient
 
+    /**
+     Get fine-grained status updates for a fine-tune job.
+     - Parameter fine_tune_id: The ID of the fine-tune job to get events for.
+     - Returns: Stream
+     - Throws: APIError
+     */
+    func streamingListFineTuneEvents(id: String) throws -> AsyncStream<[FineTuneEvent]>
+    
     /**
      Delete a fine-tuned model. You must have the Owner role in your organization.
 

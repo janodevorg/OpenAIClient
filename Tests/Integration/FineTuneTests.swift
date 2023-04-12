@@ -109,11 +109,39 @@ final class FineTuneTests: BaseTests {
             return streamClient.state == .shutdown
         })
         let expectation = XCTNSPredicateExpectation(predicate: predicate, object: streamClient)
-        let res = XCTWaiter.wait(for: [expectation], timeout: 10.0)
+        let res = await XCTWaiter.fulfillment(of: [expectation], timeout: 10.0)
         if res != XCTWaiter.Result.completed {
             XCTFail("Expected the event source to finish with shutdown")
          }
         XCTAssertTrue(isEventHandlerCalled, "Expected eventHandler to receive calls.")
+    }
+    
+    /// See [List fine-tune events](https://platform.openai.com/docs/api-reference/fine-tunes/events)
+    func testStreamListFineTuneEvents_asyncStream() async throws {
+        // Find a model created by the user
+        let model = try await client.models().data.first(where: {
+            $0.ownedBy.hasPrefix("user-")
+        })
+        guard let modelId = model?.id else {
+            throw XCTSkip("Can’t stream events because I found no models created by the user.")
+        }
+
+        // Find the fine-tune for that model
+        let firstFineTune = try await client.listFineTunes().data.first(where: {
+            $0.fineTunedModel == modelId
+        })
+        guard let fineTuneId = firstFineTune?.id else {
+            throw XCTSkip("Couldn’t find the fine-tune for model \(modelId)")
+        }
+            
+        let stream = try client.streamingListFineTuneEvents(id: fineTuneId)
+        var events = [FineTuneEvent]()
+        for await fineTuneEvents in stream {
+            for event in fineTuneEvents {
+                events.append(event)
+            }
+        }
+        XCTAssertFalse(events.isEmpty)
     }
 
     /// See [Delete fine-tune model](https://platform.openai.com/docs/api-reference/fine-tunes/delete-model)

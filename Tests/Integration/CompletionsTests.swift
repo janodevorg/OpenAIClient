@@ -1,3 +1,4 @@
+import OpenAIAPI
 @testable import OpenAIClient
 import XCTest
 
@@ -11,6 +12,21 @@ final class CompletionsTests: BaseTests {
         }
     }
 
+    /// See [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create)
+    func testStreamingCompletion_asyncStream() async throws {
+        let request = CreateCompletionRequest(
+            model: Model.davinci002.id,
+            prompt: .string(isTheWaterWetYesOrNo),
+            isStream: true
+        )
+        let stream = try client.streamingCompletion(request: request)
+        var text = ""
+        for await chunk in stream {
+            text.append(chunk.map { $0.firstChoice }.joined())
+        }
+        XCTAssertFalse(text.isEmpty)
+    }
+    
     /// See [Create streaming completion](https://platform.openai.com/docs/api-reference/completions/create)
     func testStreamingCompletion_terminatesWithFinishReason() async throws {
         var isEventHandlerCalled = false
@@ -33,7 +49,7 @@ final class CompletionsTests: BaseTests {
             return streamClient.state == .shutdown
         })
         let expectation = XCTNSPredicateExpectation(predicate: predicate, object: streamClient)
-        let res = XCTWaiter.wait(for: [expectation], timeout: 10.0)
+        let res = await XCTWaiter.fulfillment(of: [expectation], timeout: 10.0)
         if res != XCTWaiter.Result.completed {
             XCTFail("Expected the event source to finish with shutdown")
          }

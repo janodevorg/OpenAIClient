@@ -54,7 +54,7 @@ let package = Package(
             ],
             path: "Tests/Integration",
             resources: [
-              .process("resources")
+              .process("Resources")
             ]
         ),
         .testTarget(

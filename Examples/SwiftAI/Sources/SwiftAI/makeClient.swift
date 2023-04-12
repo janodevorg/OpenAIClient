@@ -1,7 +1,7 @@
 import OpenAIClient
 
 let apiKey = "" // get it from https://platform.openai.com/account/api-keys
-let orgId = ""  // get it from https://platform.openai.com/account/org-settings
+let orgId = "" // get it from https://platform.openai.com/account/org-settings
 
 struct MissingCredentials: Error, CustomStringConvertible {
     var description: String {
@@ -13,7 +13,6 @@ func makeClient() throws -> OpenAIClient {
     guard !apiKey.isEmpty && !orgId.isEmpty else {
         throw MissingCredentials()
     }
-    let client = OpenAIClient(log: .error)
-    client.configure(apiKey: apiKey, companyKey: orgId)
+    let client = OpenAIClient(log: .error).configure(apiKey: apiKey, organizationId: orgId)
     return client
 }

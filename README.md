@@ -58,7 +58,7 @@ Check [Examples/SwiftAI](https://github.com/janodevorg/OpenAIClient/tree/main/Ex
 
 The folder sources/integration-tests contains tests that make network calls. They are disabled by default because they need valid credentials and may alter data in your organization. I suggest you run them manually for debugging or to see this library in action.
 
-To input your credentials run `make keys` in the terminal. The resulting file will be ignored by `.gitignore`.
+To input your credentials run `make credentials` in the terminal. The resulting file will be ignored by `.gitignore`.
 
 ## Links of interest
 

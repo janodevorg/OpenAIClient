@@ -66,6 +66,12 @@ public enum APIError: Error, CustomDebugStringConvertible {
     /// Client tried to create an invalid URL.
     case apiClientInvalidURL
 
+    /// Error thrown by a mock that doesn’t implement the data required
+    case mockUnimplementedError
+    
+    /// Unexpected error.
+    case unexpectedError(Error)
+
     // invalid_request_error
     // "Invalid input image - format must be in ['RGBA', 'LA', 'L'], got RGB."
     // Use imagemagick to convert both images: convert image.png PNG32:image_png32.png
@@ -100,6 +106,12 @@ public enum APIError: Error, CustomDebugStringConvertible {
 
         case .apiClientInvalidURL:
             return "Client error: invalid URL."
+
+        case .mockUnimplementedError:
+            return "Unknown internal error."
+            
+        case .unexpectedError:
+            return "Unknown internal error."
         }
     }
 

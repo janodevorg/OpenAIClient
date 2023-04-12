@@ -17,6 +17,7 @@ class BaseTests: XCTestCase {
     enum Model: String {
         case baseAda = "ada"
         case codeDavinciEdit001 = "code-davinci-edit-001"
+        case davinci002 = "text-davinci-002"
         case davinci003 = "text-davinci-003"
         case davinciEdit001 = "text-davinci-edit-001"
         case embeddingAda002 = "text-embedding-ada-002"
@@ -47,17 +48,16 @@ class BaseTests: XCTestCase {
     // MARK: - SetUp
 
     override func setUp() async throws {
-        guard let keys = RealKeys.instance() else {
+        guard let credentials = Credentials.instance() else {
             throw XCTSkip("Skipping test because credentials are missing.")
         }
 
-        if !keys.hostName.isEmpty {
-            Atlantis.start(hostName: keys.hostName)
+        if let hostName = credentials.hostName, !hostName.isEmpty {
+            Atlantis.start(hostName: hostName)
         }
 
-        log = DumpLogger(label: "tests", threshold: .debug)
-        client = OpenAIClient(log: .debug)
-        client.configure(apiKey: keys.apiKey, companyKey: keys.organizationId)
+        log = DumpLogger(label: "tests", threshold: .trace)
+        client = OpenAIClient(log: .trace).configure(apiKey: credentials.apiKey, organizationId: credentials.organizationId)
     }
 
     // MARK: - Private

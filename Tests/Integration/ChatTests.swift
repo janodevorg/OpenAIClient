@@ -12,6 +12,17 @@ final class ChatTests: BaseTests {
             )
         }
     }
+    
+    /// See [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create)
+    func testStreamingChat_asyncStream() async throws {
+        let conversation = [ChatCompletionRequestMessage(role: .user, content: isTheWaterWetYesOrNo)]
+        let stream = try client.streamingChatCompletion(modelId: Model.gpt35turbo.id, conversation: conversation)
+        var text = ""
+        for await chunk in stream {
+            text.append(chunk.map { $0.firstChoice }.joined())
+        }
+        XCTAssertFalse(text.isEmpty)
+    }
 
     /// See [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create)
     func testStreamingChat_terminatesWithFinishReason() async throws {
@@ -37,7 +48,10 @@ final class ChatTests: BaseTests {
         )
         streamClient.start()
 
-        wait(for: [finishReasonExpectation], timeout: 30)
+        let res = await XCTWaiter.fulfillment(of: [finishReasonExpectation], timeout: 30.0)
+        if res != XCTWaiter.Result.completed {
+            XCTFail("Expected the event source to finish with finish reason")
+         }
         XCTAssertTrue(isEventHandlerCalled, "Expected eventHandler to receive calls.")
     }
 
@@ -62,7 +76,7 @@ final class ChatTests: BaseTests {
             return streamClient.state == .shutdown
         })
         let expectation = XCTNSPredicateExpectation(predicate: predicate, object: streamClient)
-        let res = XCTWaiter.wait(for: [expectation], timeout: 10.0)
+        let res = await XCTWaiter.fulfillment(of: [expectation], timeout: 10.0)
         if res != XCTWaiter.Result.completed {
             XCTFail("Expected the event source to finish with shutdown")
          }

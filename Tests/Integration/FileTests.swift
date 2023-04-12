@@ -51,7 +51,7 @@ final class FileTests: BaseTests {
                 purpose: "fine-tune"
             )
             let deleteInfo = try await self.client.deleteFile(id: uploadedFile.id)
-            XCTAssertTrue(deleteInfo.deleted)
+            XCTAssertTrue(deleteInfo.isDeleted)
 
         } catch {
 

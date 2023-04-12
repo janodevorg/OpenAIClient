@@ -108,6 +108,7 @@ final class EventHandlerImpl<T: Codable>: EventHandler {
 
     func onClosed() {
         log.trace("SSE onClosed")
+        streamListener.onStreamClosed()
     }
 
     func onComment(comment: String) {

@@ -32,16 +32,16 @@ private struct ThrowOnErrorDelegate: APIClientDelegate {
     }
 }
 
-public final class OpenAIClient: ObservableObject, OpenAIClientProtocol {
+public struct OpenAIClient: OpenAIClientProtocol {
     private static let baseURL = URL(string: "https://api.openai.com/v1")! // swiftlint:disable:this force_unwrapping
     private let api: APIClient
     private let log: Logger
 
     /// Value of the Authorization Bearer token.
-    @Published private var apiKey: String?
+    private var apiKey: String?
 
     /// Value of the optional "OpenAI-Organization" header.
-    @Published private var companyKey: String?
+    private var organizationId: String?
 
     // Reused for each streaming request
     private var eventSource: EventSource?
@@ -56,31 +56,22 @@ public final class OpenAIClient: ObservableObject, OpenAIClientProtocol {
 
     // MARK: - OpenAIClientProtocol
 
-    public func configure(apiKey: String, companyKey: String) {
-        self.apiKey = apiKey
-        self.companyKey = companyKey
+    public func configure(apiKey: String, organizationId: String) -> OpenAIClient {
+        var client = self
+        client.apiKey = apiKey
+        client.organizationId = organizationId
+        return client
     }
 
     public var hasValidCredentials: Bool {
-        guard let apiKey = apiKey, let companyKey = companyKey else {
+        guard let apiKey = apiKey, let organizationId = organizationId else {
             return false
         }
-        return !apiKey.isEmpty && !companyKey.isEmpty
+        return !apiKey.isEmpty && !organizationId.isEmpty
     }
     
     public func tryAuthenticatedCall() async throws {
         _ = try await models()
-    }
-
-    private func makeHeaders() -> [String: String] {
-        var headers = [String: String]()
-        if let bearerKey = apiKey {
-            headers["Authorization"] = "Bearer \(bearerKey)"
-        }
-        if let openAiOrgKey = companyKey {
-            headers["OpenAI-Organization"] = openAiOrgKey
-        }
-        return headers
     }
 
     // MARK: - Models
@@ -116,16 +107,26 @@ public final class OpenAIClient: ObservableObject, OpenAIClientProtocol {
         let eventHandler = EventHandlerImpl(
             log: log,
             shutdownToken: "[DONE]",
-            streamListener: StreamListener { try streamListener($0) }
+            streamListener: StreamListener(onMessage: { try streamListener($0) }, onStreamClosed: {})
         )
         return StreamingClient(
             url: OpenAIClient.baseURL.appendingPathComponent("completions"),
             authHeaders: makeHeaders(),
-            body: try JSONEncoder().encode(completionRequest),
+            body: try encode(completionRequest),
             method: .post,
             eventHandler: eventHandler,
             log: log
         )
+    }
+    
+    public func streamingCompletion(
+        request: CreateCompletionRequest
+    ) throws -> AsyncStream<[CompletionChunk]> {
+        var completionRequest = request
+        completionRequest.isStream = true
+        let data = try encode(completionRequest)
+        let url = OpenAIClient.baseURL.appendingPathComponent("completions")
+        return try stream(url: url, method: .post, body: data)
     }
 
     // MARK: - Chat
@@ -150,16 +151,30 @@ public final class OpenAIClient: ObservableObject, OpenAIClientProtocol {
         let eventHandler = EventHandlerImpl(
             log: log,
             shutdownToken: "[DONE]",
-            streamListener: StreamListener { try streamListener($0) }
+            streamListener: StreamListener(onMessage: { try streamListener($0) }, onStreamClosed: {})
         )
         return StreamingClient(
             url: OpenAIClient.baseURL.appendingPathComponent("chat/completions"),
             authHeaders: makeHeaders(),
-            body: try JSONEncoder().encode(chatCompletionRequest),
+            body: try encode(chatCompletionRequest),
             method: .post,
             eventHandler: eventHandler,
             log: log
         )
+    }
+        
+    public func streamingChatCompletion(
+        modelId: String,
+        conversation: [ChatCompletionRequestMessage]
+    ) throws -> AsyncStream<[ChatChunk]> {
+        let chatCompletionRequest = CreateChatCompletionRequest(
+            model: modelId,
+            messages: conversation,
+            isStream: true
+        )
+        let data = try encode(chatCompletionRequest)
+        let url = OpenAIClient.baseURL.appendingPathComponent("chat/completions")
+        return try stream(url: url, method: .post, body: data)
     }
 
     // MARK: - Edit
@@ -410,7 +425,7 @@ public final class OpenAIClient: ObservableObject, OpenAIClientProtocol {
         let eventHandler = EventHandlerImpl(
             log: log,
             shutdownToken: "[DONE]",
-            streamListener: StreamListener { try streamListener($0) }
+            streamListener: StreamListener(onMessage: { try streamListener($0) }, onStreamClosed: {})
         )
 
         // using URLComponents because .appending(queryItems:) requires macos 13
@@ -430,6 +445,19 @@ public final class OpenAIClient: ObservableObject, OpenAIClientProtocol {
             eventHandler: eventHandler,
             log: log
         )
+    }
+    
+    public func streamingListFineTuneEvents(id: String) throws -> AsyncStream<[FineTuneEvent]> {
+        // using URLComponents because .appending(queryItems:) requires macos 13
+        let url = OpenAIClient.baseURL.appendingPathComponent("fine-tunes/\(id)/events")
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
+        let queryItem = URLQueryItem(name: "stream", value: "true")
+        components?.queryItems = [queryItem]
+        guard let streamingURL = components?.url else {
+            throw APIError.apiClientInvalidURL
+        }
+        
+        return try stream(url: streamingURL, method: .get, body: nil)
     }
 
     public func deleteFineTuneModel(id: String) async throws -> DeleteModelResponse {
@@ -464,5 +492,65 @@ public final class OpenAIClient: ObservableObject, OpenAIClientProtocol {
         var request = Paths.engines.engineID(id).get
         request.headers = makeHeaders()
         return try await api.send(request).value
+    }
+    
+    // MARK: - Private
+    
+    /// Encode the given object.
+    /// - Throws: APIError.apiClientEncodingError
+    private func encode<T: Encodable>(_ encodable: T) throws -> Data {
+        do {
+            return try JSONEncoder().encode(encodable)
+        } catch {
+            if let encodingError = error as? EncodingError {
+                throw APIError.apiClientEncodingError(encodingError)
+            } else {
+                throw APIError.unexpectedError(error)
+            }
+        }
+    }
+    
+    private func makeHeaders() -> [String: String] {
+        var headers = [String: String]()
+        if let bearerKey = apiKey {
+            headers["Authorization"] = "Bearer \(bearerKey)"
+        }
+        if let openAiOrgKey = organizationId {
+            headers["OpenAI-Organization"] = openAiOrgKey
+        }
+        return headers
+    }
+    
+    private func stream<T: Codable>(
+        url: URL,
+        method: StreamingClient.HTTPMethod,
+        body: Data?
+    ) throws -> AsyncStream<[T]> {
+        AsyncStream([T].self) { continuation in
+            let streamListener = StreamListener<T>(
+                onMessage: { continuation.yield($0) },
+                onStreamClosed: { continuation.finish() }
+            )
+            let eventHandler = EventHandlerImpl(
+                log: log,
+                shutdownToken: "[DONE]",
+                streamListener: streamListener
+            )
+            let client = StreamingClient(
+                url: url,
+                authHeaders: makeHeaders(),
+                body: body,
+                method: method,
+                eventHandler: eventHandler,
+                log: log
+            )
+            
+            let onTermination: (@Sendable (AsyncStream<[T]>.Continuation.Termination) -> Void)? = { [client] reason in
+                self.log.debug("Stream terminated with reason: \(reason)")
+                client.stop()
+            }
+            continuation.onTermination = onTermination
+            client.start()
+        }
     }
 }
