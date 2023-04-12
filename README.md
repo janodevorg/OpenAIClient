@@ -38,18 +38,6 @@ let response = try await client.completions(request: .init(model: Model.davinci0
 print("response: \(response.choices.first?.text)")
 ```
 
-To request a streaming completion:
-```swift
-let prompt = "hello there chatgpt!"
-let streamClient = try client.streamingChatCompletion(
-    streamListener: { print("chunk \($0)") },
-    modelId: Model.gpt35turbo.id,
-    conversation: [ChatCompletionRequestMessage(role: .user, content: prompt)]
-)
-streamClient.start()
-```
-Call `stop()` to stop streaming or wait until `streamClient.state == .shutdown`.
-
 To request a streaming completion as an AsyncStream:
 ```swift
 let request = CreateCompletionRequest(
@@ -61,6 +49,18 @@ for await chunk in stream {
     print(chunk.map { $0.firstChoice }.joined())
 }
 ```
+
+To request a streaming completion:
+```swift
+let prompt = "hello there chatgpt!"
+let streamClient = try client.streamingChatCompletion(
+    streamListener: { print("chunk \($0)") },
+    modelId: Model.gpt35turbo.id,
+    conversation: [ChatCompletionRequestMessage(role: .user, content: prompt)]
+)
+streamClient.start()
+```
+Call `stop()` to stop streaming or wait until `streamClient.state == .shutdown`.
 
 ## Example
 
