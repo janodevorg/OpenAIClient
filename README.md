@@ -2,7 +2,7 @@
 
 # OpenAIClient
 
-Swift implementation of the OpenAI API partially generated from the OpenAI definition. All features implemented.
+Full implementation of the OpenAI API in Swift. 
 
 ## Installation
 
