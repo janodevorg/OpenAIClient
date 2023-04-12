@@ -10,7 +10,7 @@ Swift implementation of the OpenAI API partially generated from the OpenAI defin
 let package = Package(
     ...
     dependencies: [
-        .package(url: "git@github.com:janodevorg/OpenAIClient.git", from: "1.1.0")
+        .package(url: "git@github.com:janodevorg/OpenAIClient.git", from: "2.0.0")
     ],
     targets: [
         .target(
@@ -31,14 +31,14 @@ let client = OpenAIClient(log: log)
 client.configure(apiKey: "API_KEY", companyKey: "ORGANIZATION_ID")
 ```
 
-To send a message:
+To request a completion:
 ```swift
 let prompt = "hello there chatgpt!"
 let response = try await client.completions(request: .init(model: Model.davinci003.id, prompt: .string(prompt)))
 print("response: \(response.choices.first?.text)")
 ```
 
-To send a message and receive a response with streaming:
+To request a streaming completion:
 ```swift
 let prompt = "hello there chatgpt!"
 let streamClient = try client.streamingChatCompletion(
@@ -49,6 +49,18 @@ let streamClient = try client.streamingChatCompletion(
 streamClient.start()
 ```
 Call `stop()` to stop streaming or wait until `streamClient.state == .shutdown`.
+
+To request a streaming completion as an AsyncStream:
+```swift
+let request = CreateCompletionRequest(
+    model: Model.davinci002.id,
+    prompt: .string("hello there chatgpt!")
+)
+let stream = try client.streamingCompletion(request: request)
+for await chunk in stream {
+    print(chunk.map { $0.firstChoice }.joined())
+}
+```
 
 ## Example
 
