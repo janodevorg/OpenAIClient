@@ -16,14 +16,12 @@ file_types_order:
     - extension
 
 included:
-  - sources/integration-tests
-  - sources/main
-  - sources/tests
+  - Sources
+  - Tests
+  - Examples
 
 excluded:
-  - sources/main/MultipartEncoder  
-  - sources/main/Streaming/LDSwiftEventSource
-  - sources/tests/LDSwiftEventSource
+  - Sources/Embedded-Packages
 
 line_length:
     error: 200

@@ -1,5 +1,4 @@
 // swiftlint:disable file_types_order
-
 #if os(iOS)
     import UIKit
     public typealias CPImage = UIImage
@@ -10,6 +9,7 @@
     import AppKit
     public typealias CPImage = NSImage
 #endif
+// swiftlint:enable file_types_order
 
 #if os(macOS)
 public extension NSImage {

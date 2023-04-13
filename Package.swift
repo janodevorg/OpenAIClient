@@ -16,8 +16,7 @@ let package = Package(
         .package(url: "git@github.com:apple/swift-docc-plugin.git", from: "1.0.0"),
         .package(url: "git@github.com:janodevorg/OpenAIAPI.git", from: "1.0.0"),
         .package(url: "git@github.com:ProxymanApp/atlantis.git", from : "1.21.0"),
-        // ↓ 'main' because there is still no version for this fix: https://github.com/realm/SwiftLint/issues/4722
-        // .package(url: "git@github.com:realm/SwiftLint.git", branch: "main")
+        .package(url: "git@github.com:realm/SwiftLint.git", from: "0.51.0")
     ],
     targets: [
         .target(
@@ -42,8 +41,7 @@ let package = Package(
                 "Embedded-Packages/XCTestDynamicOverlay/VERSION-0.8.4"
             ],
             plugins: [
-                // disabling on release because depending on swiftlint would mark the package as unstable
-                // .plugin(name: "SwiftLintPlugin", package: "SwiftLint")
+                .plugin(name: "SwiftLintPlugin", package: "SwiftLint")
             ]
         ),
         .testTarget(
