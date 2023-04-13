@@ -27,8 +27,7 @@ let package = Package(
 
 To configure the client:
 ```swift
-let client = OpenAIClient(log: log)
-client.configure(apiKey: "API_KEY", companyKey: "ORGANIZATION_ID")
+let client = OpenAIClient(log: log).configure(apiKey: "API_KEY", companyKey: "ORGANIZATION_ID")
 ```
 
 To request a completion:
@@ -60,7 +59,7 @@ let streamClient = try client.streamingChatCompletion(
 )
 streamClient.start()
 ```
-Call `stop()` to stop streaming or wait until `streamClient.state == .shutdown`.
+Call `stop()` to stop streaming or wait until `streamClient.state == .shutdown`. Keep the streamClient instance alive while streaming results.
 
 ## Example
 
@@ -68,9 +67,15 @@ Check [Examples/SwiftAI](https://github.com/janodevorg/OpenAIClient/tree/main/Ex
 
 ## Integration tests
 
-The folder sources/integration-tests contains tests that make network calls. They are disabled by default because they need valid credentials and may alter data in your organization. I suggest you run them manually for debugging or to see this library in action.
+The folder Tests/Integration contains tests that make network calls. They are disabled by default because they need valid credentials and may alter data in your organization. I suggest you run them manually for debugging or to see this library in action.
 
-To input your credentials run `make credentials` in the terminal. The resulting file will be ignored by `.gitignore`.
+To input your credentials run `make credentials` in the terminal. This creates a file at `Tests/Integration/Resources/credentials.json` that is ignored by `.gitignore`:
+```json
+{
+    "apiKey": "sk-cafebabedeadbeef",
+    "organizationId": "org-cafebabedeadbeef",
+}
+```
 
 ## Links of interest
 
