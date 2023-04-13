@@ -51,11 +51,6 @@ class BaseTests: XCTestCase {
         guard let credentials = Credentials.instance() else {
             throw XCTSkip("Skipping test because credentials are missing.")
         }
-
-        if let hostName = credentials.hostName, !hostName.isEmpty {
-            Atlantis.start(hostName: hostName)
-        }
-
         log = DumpLogger(label: "tests", threshold: .trace)
         client = OpenAIClient(log: .trace).configure(apiKey: credentials.apiKey, organizationId: credentials.organizationId)
     }

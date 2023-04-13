@@ -4,7 +4,6 @@ import Foundation
 struct Credentials: Decodable {
     let apiKey: String
     let organizationId: String
-    let hostName: String?
 
     var credentials: [String: String] {
         [

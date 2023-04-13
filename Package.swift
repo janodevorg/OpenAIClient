@@ -15,7 +15,6 @@ let package = Package(
     dependencies: [
         .package(url: "git@github.com:apple/swift-docc-plugin.git", from: "1.0.0"),
         .package(url: "git@github.com:janodevorg/OpenAIAPI.git", from: "1.0.0"),
-        .package(url: "git@github.com:ProxymanApp/atlantis.git", from : "1.21.0"),
         .package(url: "git@github.com:realm/SwiftLint.git", from: "0.51.0")
     ],
     targets: [
@@ -47,8 +46,7 @@ let package = Package(
         .testTarget(
             name: "IntegrationTests",
             dependencies: [
-                "OpenAIClient",
-                .product(name: "Atlantis", package: "Atlantis")
+                "OpenAIClient"
             ],
             path: "Tests/Integration",
             resources: [

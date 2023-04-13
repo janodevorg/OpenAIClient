@@ -6,4 +6,4 @@ env
 Package.resolved
 xcshareddata
 xcuserdata
-Tests/Integration/resources/credentials.json
+Tests/Integration/Resources/credentials.json

@@ -32,15 +32,10 @@ credentials:
 	echo "Please paste your organization ID:"; \
 	echo "(you can find it at https://platform.openai.com/account/org-settings)"; \
 	read organizationId; \
-	echo ""; \
-	echo "Please enter your hostname if you intend to debug in Proxyman (otherwise press enter)"; \
-	echo "(you can find it at Apple > System Settings > General > Sharing > Local hostname)"; \
-	read hostName; \
 	filename="Tests/Integration/Resources/credentials.json"; \
 	echo '{' > $$filename; \
 	echo '    "apiKey": "'$$apiKey'",' >> $$filename; \
-	echo '    "organizationId": "'$$organizationId'",' >> $$filename; \
-	echo '    "hostName": "'$$hostName'"' >> $$filename; \
+	echo '    "organizationId": "'$$organizationId'"' >> $$filename; \
 	echo '}' >> $$filename; \
 	echo ""; \
 	echo "JSON file created at $$filename"; \
