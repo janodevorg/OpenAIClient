@@ -1,4 +1,3 @@
-import Atlantis
 import OpenAIAPI
 @testable import OpenAIClient
 import XCTest

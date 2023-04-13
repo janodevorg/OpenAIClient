@@ -18,13 +18,13 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build iOS
         run: |
-          set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "OS=16.2,name=iPhone 14 Pro" -skipPackagePluginValidation | xcpretty
+          set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "OS=16.4,name=iPhone 14 Pro" -skipPackagePluginValidation | xcbeautify
       - name: Build macOS
         run: |
-          set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "platform=macOS,arch=arm64" -skipPackagePluginValidation | xcpretty
+          set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "platform=macOS,arch=arm64" -skipPackagePluginValidation | xcbeautify
       - name: Build macCatalyst
         run: |
-          set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "platform=macOS,arch=arm64,variant=Mac Catalyst" -skipPackagePluginValidation | xcpretty
+          set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "platform=macOS,arch=arm64,variant=Mac Catalyst" -skipPackagePluginValidation | xcbeautify
       - name: Build tvOS
         run: |
-          set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)" -skipPackagePluginValidation | xcpretty
+          set -o pipefail && xcodebuild test -scheme "OpenAIClient" -destination "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)" -skipPackagePluginValidation | xcbeautify
