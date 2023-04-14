@@ -14,8 +14,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "git@github.com:apple/swift-docc-plugin.git", from: "1.0.0"),
-        .package(url: "git@github.com:janodevorg/OpenAIAPI.git", from: "1.0.0"),
-        .package(url: "git@github.com:realm/SwiftLint.git", from: "0.51.0")
+        .package(url: "git@github.com:janodevorg/OpenAIAPI.git", from: "1.0.0")
+        // disabled because it creates problems building release versions: Missing package product 'SwiftLintPlugin@11'
+//        .package(url: "git@github.com:realm/SwiftLint.git", from: "0.51.0")
     ],
     targets: [
         .target(
@@ -38,10 +39,8 @@ let package = Package(
                 "Embedded-Packages/XCTestDynamicOverlay/LICENSE.txt",
                 "Embedded-Packages/XCTestDynamicOverlay/README.md",
                 "Embedded-Packages/XCTestDynamicOverlay/VERSION-0.8.4"
-            ],
-            plugins: [
-                .plugin(name: "SwiftLintPlugin", package: "SwiftLint")
             ]
+//            plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]
         ),
         .testTarget(
             name: "IntegrationTests",
