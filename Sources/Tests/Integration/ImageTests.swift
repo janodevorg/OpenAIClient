@@ -2,7 +2,7 @@ import OpenAIAPI
 import OpenAIClient
 import XCTest
 
-final class ImageTests: BaseTests {
+final class ImageTests: BaseTests, @unchecked Sendable {
     /// See [Create image](https://platform.openai.com/docs/api-reference/images/create)
     func testCreateImage() async throws {
         await dumpJSONCatchingErrors {

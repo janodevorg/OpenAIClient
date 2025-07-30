@@ -1,3 +1,4 @@
+import CustomDump
 import OpenAIAPI
 @testable import OpenAIClient
 import XCTest
@@ -11,7 +12,7 @@ import XCTest
  I wrote these tests to run them manually as an aid for debugging.
  If there is nothing of value in your account you are safe to run them.
  */
-class BaseTests: XCTestCase {
+class BaseTests: XCTestCase, @unchecked Sendable {
     /// Models called during testing.
     enum Model: String {
         case baseAda = "ada"

@@ -2,7 +2,7 @@ import OpenAIAPI
 import OpenAIClient
 import XCTest
 
-final class AudioTests: BaseTests {
+final class AudioTests: BaseTests, @unchecked Sendable {
     /// See [Create transcription](https://platform.openai.com/docs/api-reference/audio/create)
     func testCreateTranscription() async throws {
         await dumpJSONCatchingErrors {

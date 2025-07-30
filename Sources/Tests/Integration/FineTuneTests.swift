@@ -2,7 +2,7 @@ import OpenAIAPI
 @testable import OpenAIClient
 import XCTest
 
-final class FineTuneTests: BaseTests {
+final class FineTuneTests: BaseTests, @unchecked Sendable {
     // {"prompt": "<prompt text>", "completion": "<ideal generated text>"}
     private let fileContent = """
     {"prompt": "Why do people like soccer?", "completion": "It dispenses joy and misery at random. mimics life."}
@@ -92,12 +92,12 @@ final class FineTuneTests: BaseTests {
             throw XCTSkip("Couldn’t find the fine-tune for model \(modelId)")
         }
 
-        var isEventHandlerCalled = false
-        let eventHandler: ([FineTuneEvent]) throws -> Void = { chunks in
-            isEventHandlerCalled = true
+        let expectation = expectation(description: "FineTune stream handler called")
+        let eventHandler: @Sendable ([FineTuneEvent]) throws -> Void = { chunks in
+            expectation.fulfill()
             for chunk in chunks {
                 let chunkString = try JSON.toString(chunk) ?? ""
-                self.log.debug("new chunk: \(chunkString)")
+                print("FineTune chunk: \(chunkString)")
             }
         }
 
@@ -108,12 +108,11 @@ final class FineTuneTests: BaseTests {
             guard let streamClient = object as? StreamingClient else { return false }
             return streamClient.state == .shutdown
         })
-        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: streamClient)
-        let res = await XCTWaiter.fulfillment(of: [expectation], timeout: 10.0)
+        let shutdownExpectation = XCTNSPredicateExpectation(predicate: predicate, object: streamClient)
+        let res = await XCTWaiter.fulfillment(of: [expectation, shutdownExpectation], timeout: 10.0)
         if res != XCTWaiter.Result.completed {
-            XCTFail("Expected the event source to finish with shutdown")
+            XCTFail("Expected the event source to finish with shutdown and handler to be called")
          }
-        XCTAssertTrue(isEventHandlerCalled, "Expected eventHandler to receive calls.")
     }
     
     /// See [List fine-tune events](https://platform.openai.com/docs/api-reference/fine-tunes/events)

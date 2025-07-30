@@ -11,7 +11,7 @@ import Foundation
  log.debug("something is up")
  ```
  */
-final class DumpLogger: PrintLogger {
+final class DumpLogger: PrintLogger, @unchecked Sendable {
     override func dump<T>(_ object: T) -> String {
         var message = ""
         customDump(object, to: &message)

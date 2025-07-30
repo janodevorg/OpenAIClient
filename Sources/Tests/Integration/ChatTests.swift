@@ -27,14 +27,12 @@ final class ChatTests: BaseTests {
     /// See [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create)
     func testStreamingChat_terminatesWithFinishReason() async throws {
         let finishReasonExpectation = expectation(description: "Finish reason provided")
-        var isEventHandlerCalled = false
-        let testChunkForFinishReason: ([ChatChunk]) throws -> Void = { chunks in
-            isEventHandlerCalled = true
+        let testChunkForFinishReason: @Sendable ([ChatChunk]) throws -> Void = { chunks in
             for chunk in chunks {
                 let chunkString = try JSON.toString(chunk) ?? ""
-                self.log.debug("new chunk: \(chunkString)")
+                print("Chat chunk: \(chunkString)")
                 if let finishReason = chunk.choices.last?.finishReason {
-                    self.log.debug("finishReason: \(finishReason)")
+                    print("finishReason: \(finishReason)")
                     finishReasonExpectation.fulfill()
                     return
                 }
@@ -52,18 +50,17 @@ final class ChatTests: BaseTests {
         if res != XCTWaiter.Result.completed {
             XCTFail("Expected the event source to finish with finish reason")
          }
-        XCTAssertTrue(isEventHandlerCalled, "Expected eventHandler to receive calls.")
     }
 
     /// See [Create chat completion](https://platform.openai.com/docs/api-reference/chat/create)
     func testStreamingChat_terminatesWithEventSourceShutdown() async throws {
-        var isEventHandlerCalled = false
+        let expectation = expectation(description: "Stream handler called")
         let streamClient = try client.streamingChatCompletion(
-            streamListener: { chunks in
-                isEventHandlerCalled = true
+            streamListener: { @Sendable chunks in
+                expectation.fulfill()
                 for chunk in chunks {
                     let chunkString = try JSON.toString(chunk) ?? ""
-                    self.log.debug(chunkString)
+                    print("Chunk: \(chunkString)")
                 }
             },
             modelId: Model.gpt35turbo.id,
@@ -75,11 +72,10 @@ final class ChatTests: BaseTests {
             guard let streamClient = object as? StreamingClient else { return false }
             return streamClient.state == .shutdown
         })
-        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: streamClient)
-        let res = await XCTWaiter.fulfillment(of: [expectation], timeout: 10.0)
+        let shutdownExpectation = XCTNSPredicateExpectation(predicate: predicate, object: streamClient)
+        let res = await XCTWaiter.fulfillment(of: [expectation, shutdownExpectation], timeout: 10.0)
         if res != XCTWaiter.Result.completed {
-            XCTFail("Expected the event source to finish with shutdown")
+            XCTFail("Expected the event source to finish with shutdown and handler to be called")
          }
-        XCTAssertTrue(isEventHandlerCalled, "Expected eventHandler to receive calls.")
     }
 }

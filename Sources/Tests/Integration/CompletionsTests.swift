@@ -29,12 +29,12 @@ final class CompletionsTests: BaseTests {
     
     /// See [Create streaming completion](https://platform.openai.com/docs/api-reference/completions/create)
     func testStreamingCompletion_terminatesWithFinishReason() async throws {
-        var isEventHandlerCalled = false
-        let chunkHandler: ([CompletionChunk]) throws -> Void = { chunks in
-            isEventHandlerCalled = true
+        let expectation = expectation(description: "Completion stream handler called")
+        let chunkHandler: @Sendable ([CompletionChunk]) throws -> Void = { chunks in
+            expectation.fulfill()
             for chunk in chunks {
                 let chunkString = try JSON.toString(chunk) ?? ""
-                self.log.debug("new chunk: \(chunkString)")
+                print("Completion chunk: \(chunkString)")
             }
         }
 
@@ -48,11 +48,10 @@ final class CompletionsTests: BaseTests {
             guard let streamClient = object as? StreamingClient else { return false }
             return streamClient.state == .shutdown
         })
-        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: streamClient)
-        let res = await XCTWaiter.fulfillment(of: [expectation], timeout: 10.0)
+        let shutdownExpectation = XCTNSPredicateExpectation(predicate: predicate, object: streamClient)
+        let res = await XCTWaiter.fulfillment(of: [expectation, shutdownExpectation], timeout: 10.0)
         if res != XCTWaiter.Result.completed {
-            XCTFail("Expected the event source to finish with shutdown")
+            XCTFail("Expected the event source to finish with shutdown and handler to be called")
          }
-        XCTAssertTrue(isEventHandlerCalled, "Expected eventHandler to receive calls.")
     }
 }

@@ -9,7 +9,7 @@ import Foundation
  log.debug("something is up")
  ```
  */
-class PrintLogger: ObservableObject, Logger
+class PrintLogger: ObservableObject, Logger, @unchecked Sendable
 {
     // MARK: - Initializer
 

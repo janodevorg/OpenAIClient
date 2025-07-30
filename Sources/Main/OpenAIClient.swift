@@ -47,7 +47,7 @@ public struct OpenAIClient: OpenAIClientProtocol, @unchecked Sendable {
     public init(log: Level = .debug) {
         let logger = DumpLogger(label: "OpenAIClient", threshold: log)
         self.log = logger
-        self.api = APIClient(baseURL: OpenAIClient.baseURL) { conf in
+        self.api = APIClient(baseURL: OpenAIClient.baseURL) { @Sendable conf in
             conf.delegate = ThrowOnErrorDelegate(log: logger)
         }
     }
