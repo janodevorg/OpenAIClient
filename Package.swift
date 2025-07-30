@@ -1,19 +1,20 @@
-// swift-tools-version:5.7.1
+// swift-tools-version:6.1
 import PackageDescription
 
 let package = Package(
     name: "OpenAIClient",
     platforms: [
-        .iOS(.v13), 
-        .macCatalyst(.v13), 
-        .macOS(.v12),
-        .tvOS(.v13)
+        .iOS(.v18), 
+        .macCatalyst(.v18), 
+        .macOS(.v15),
+        .tvOS(.v18)
     ],
     products: [
         .library(name: "OpenAIClient", targets: ["OpenAIClient"]),
     ],
     dependencies: [
-        .package(url: "git@github.com:apple/swift-docc-plugin.git", from: "1.0.0"),
+        .package(url: "git@github.com:pointfreeco/swift-custom-dump", from: "1.3.3"),
+        .package(url: "git@github.com:apple/swift-docc-plugin.git", from: "1.4.3"),
         .package(url: "git@github.com:janodevorg/OpenAIAPI.git", from: "1.0.0")
         // disabled because it creates problems building release versions: Missing package product 'SwiftLintPlugin@11'
 //        .package(url: "git@github.com:realm/SwiftLint.git", from: "0.51.0")
@@ -22,9 +23,10 @@ let package = Package(
         .target(
             name: "OpenAIClient",
             dependencies: [
+                .product(name: "CustomDump", package: "swift-custom-dump"),
                 .product(name: "OpenAIAPI", package: "OpenAIAPI")
             ],
-            path: "Sources",
+            path: "Sources/Main",
             exclude: [
                 "Embedded-Packages/CustomDump/LICENSE.txt",
                 "Embedded-Packages/CustomDump/README.md",
@@ -47,7 +49,7 @@ let package = Package(
             dependencies: [
                 "OpenAIClient"
             ],
-            path: "Tests/Integration",
+            path: "Sources/Tests/Integration",
             resources: [
               .process("Resources")
             ]
@@ -57,7 +59,7 @@ let package = Package(
             dependencies: [
                 "OpenAIClient"
             ],
-            path: "Tests/Unit"
+            path: "Sources/Tests/Unit"
         )
     ]
 )

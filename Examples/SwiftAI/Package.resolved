@@ -1,0 +1,50 @@
+{
+  "pins" : [
+    {
+      "identity" : "get",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:kean/Get.git",
+      "state" : {
+        "revision" : "a7dd8e0233d4041330591445de21b7e5d4c953c6",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "openaiapi",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:janodevorg/OpenAIAPI.git",
+      "state" : {
+        "revision" : "a0a493f5e1c084701e7f1f3194b1e74aaf718ecc",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "openaiclient",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:janodevorg/OpenAIClient.git",
+      "state" : {
+        "revision" : "0b9132b561e19fbc8fc0131f3366ccb0adf482a0",
+        "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "fee6933f37fde9a5e12a1e4aeaa93fe60116ff2a",
+        "version" : "1.2.2"
+      }
+    },
+    {
+      "identity" : "urlqueryencoder",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:CreateAPI/URLQueryEncoder.git",
+      "state" : {
+        "revision" : "4ce950479707ea109f229d7230ec074a133b15d7",
+        "version" : "0.2.1"
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -1,0 +1,3 @@
+[submodule "mk"]
+	path = mk
+	url = https://github.com/janodevorg/mk.git
