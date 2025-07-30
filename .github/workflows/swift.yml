@@ -15,4 +15,3 @@ jobs:
           submodules: recursive
       - name: Test Swift Package
         run: swift test
-EOF < /dev/null
