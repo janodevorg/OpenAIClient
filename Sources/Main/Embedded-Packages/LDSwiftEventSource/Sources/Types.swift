@@ -99,7 +99,7 @@ public enum ReadyState: String, Equatable {
 }
 
 /// Error class that indicates the remote server returned an unsuccessful HTTP response code.
-class UnsuccessfulResponseError: Error {
+final class UnsuccessfulResponseError: Error, @unchecked Sendable {
     /// The HTTP response code received.
     let responseCode: Int
 

@@ -1,6 +1,6 @@
 import Foundation
 
-public final class StreamingClient {
+public final class StreamingClient: @unchecked Sendable {
     enum HTTPMethod: String {
         case get = "GET"
         case post = "POST"

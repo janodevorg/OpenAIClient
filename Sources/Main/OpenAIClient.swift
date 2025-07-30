@@ -1,6 +1,6 @@
 import Foundation
-import Get
-import OpenAIAPI
+@preconcurrency import Get
+@preconcurrency import OpenAIAPI
 
 /**
  Validates that the response code is in range [200,300).
@@ -18,7 +18,7 @@ private func validate(response: HTTPURLResponse, data: Data) throws {
     }
 }
 
-private struct ThrowOnErrorDelegate: APIClientDelegate {
+private struct ThrowOnErrorDelegate: APIClientDelegate, @unchecked Sendable {
     private let log: Logger
 
     init(log: Logger) {
@@ -30,7 +30,7 @@ private struct ThrowOnErrorDelegate: APIClientDelegate {
     }
 }
 
-public struct OpenAIClient: OpenAIClientProtocol {
+public struct OpenAIClient: OpenAIClientProtocol, @unchecked Sendable {
     private static let baseURL = URL(string: "https://api.openai.com/v1")! // swiftlint:disable:this force_unwrapping
     private let api: APIClient
     private let log: Logger
@@ -101,7 +101,7 @@ public struct OpenAIClient: OpenAIClientProtocol {
 
     public func streamingCompletion(
         request: CreateCompletionRequest,
-        streamListener: @escaping ([CompletionChunk]) throws -> Void
+        streamListener: @escaping @Sendable ([CompletionChunk]) throws -> Void
     ) throws -> StreamingClient {
         var completionRequest = request
         completionRequest.isStream = true
@@ -140,7 +140,7 @@ public struct OpenAIClient: OpenAIClientProtocol {
     }
 
     public func streamingChatCompletion(
-        streamListener: @escaping ([ChatChunk]) throws -> Void,
+        streamListener: @escaping @Sendable ([ChatChunk]) throws -> Void,
         modelId: String,
         conversation: [ChatCompletionRequestMessage]
     ) throws -> StreamingClient {
@@ -418,7 +418,7 @@ public struct OpenAIClient: OpenAIClientProtocol {
 
     public func streamingListFineTuneEvents(
         id: String,
-        streamListener: @escaping ([FineTuneEvent]) throws -> Void
+        streamListener: @escaping @Sendable ([FineTuneEvent]) throws -> Void
     ) async throws -> StreamingClient {
         let eventHandler = EventHandlerImpl(
             log: log,
@@ -519,7 +519,7 @@ public struct OpenAIClient: OpenAIClientProtocol {
         return headers
     }
     
-    private func stream<T: Codable>(
+    private func stream<T: Codable & Sendable>(
         url: URL,
         method: StreamingClient.HTTPMethod,
         body: Data?

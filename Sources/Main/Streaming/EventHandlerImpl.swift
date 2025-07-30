@@ -1,7 +1,7 @@
 import Foundation
 
-final class EventHandlerImpl<T: Codable>: EventHandler {
-    struct Message {
+final class EventHandlerImpl<T: Codable & Sendable>: EventHandler, @unchecked Sendable {
+    struct Message: Sendable {
         let eventType: String
         let messageEvent: MessageEvent
     }

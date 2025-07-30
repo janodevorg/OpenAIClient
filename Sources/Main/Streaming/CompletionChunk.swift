@@ -1,8 +1,8 @@
 import Foundation
 
 // A completions fragment sent over SSE.
-public struct CompletionChunk: Codable {
-    public struct Choice: Codable {
+public struct CompletionChunk: Codable, Sendable {
+    public struct Choice: Codable, Sendable {
         public let text: String
         public let index: Int
         public let logprobs: Double?

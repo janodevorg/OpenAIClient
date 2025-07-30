@@ -4,8 +4,8 @@ import Foundation
  A type not defined in OpenAI OpenAPI that appears when an error is returned.
  To see this type show up, query "Angelina Jolie" and you’ll get an "invalid_request_error".
  */
-public struct OpenAIError: Error, Codable, CustomStringConvertible {
-    public struct Payload: Codable {
+public struct OpenAIError: Error, Codable, CustomStringConvertible, Sendable {
+    public struct Payload: Codable, Sendable {
         public let code: String?
         public let message: String
         public let param: String?
@@ -38,7 +38,7 @@ public struct OpenAIError: Error, Codable, CustomStringConvertible {
  Errors thrown by this package.
  The client of this package must not receive any error other than those defined here.
  */
-public enum APIError: Error, CustomDebugStringConvertible {
+public enum APIError: Error, CustomDebugStringConvertible, Sendable {
     /// Server returned HTTP error.
     case apiServerHTTPError(String?, httpCode: Int)
 

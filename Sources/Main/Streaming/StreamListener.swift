@@ -1,4 +1,4 @@
-public struct StreamListener<T> {
-    public var onMessage: ([T]) throws -> Void
-    public var onStreamClosed: () -> Void
+public struct StreamListener<T: Sendable>: Sendable {
+    public var onMessage: @Sendable ([T]) throws -> Void
+    public var onStreamClosed: @Sendable () -> Void
 }

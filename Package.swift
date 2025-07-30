@@ -28,9 +28,6 @@ let package = Package(
             ],
             path: "Sources/Main",
             exclude: [
-                "Embedded-Packages/CustomDump/LICENSE.txt",
-                "Embedded-Packages/CustomDump/README.md",
-                "Embedded-Packages/CustomDump/VERSION-0.9.1",
                 "Embedded-Packages/Log/LICENSE.txt",
                 "Embedded-Packages/Log/README.md",
                 "Embedded-Packages/Log/VERSION-1.0.0",

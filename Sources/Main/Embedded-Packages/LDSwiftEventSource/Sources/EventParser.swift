@@ -66,7 +66,7 @@ final class EventParser {
         case Constants.eventLabel:
             eventType = String(value)
         case Constants.retryLabel:
-            if value.allSatisfy(("0"..."9").contains), let reconnectionTime = Int64(value) {
+            if value.allSatisfy({ ("0"..."9").contains($0) }), let reconnectionTime = Int64(value) {
                 currentRetry = Double(reconnectionTime) * 0.001
             }
         default:

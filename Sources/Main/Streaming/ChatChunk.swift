@@ -1,14 +1,14 @@
 import Foundation
 
 // A chat fragment sent over SSE.
-public struct ChatChunk: Codable {
+public struct ChatChunk: Codable, Sendable {
     public let id, object: String
     public let created: Int
     public let model: String
     public let choices: [Choice]
 
-    public struct Choice: Codable {
-        public struct Delta: Codable {
+    public struct Choice: Codable, Sendable {
+        public struct Delta: Codable, Sendable {
             public let content: String?
             public let role: String?
         }

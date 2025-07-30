@@ -41,7 +41,7 @@ final class EventSource {
     func getLastEventId() -> String? { esDelegate.getLastEventId() }
 
     /// Struct for configuring the EventSource.
-    struct Config {
+    struct Config: @unchecked Sendable {
         /// The `EventHandler` called in response to activity on the stream.
         let handler: EventHandler
         /// The `URL` of the request used when connecting to the EventSource API.
@@ -132,7 +132,7 @@ final class ReconnectionTimer {
 }
 
 // MARK: EventSourceDelegate
-final class EventSourceDelegate: NSObject, URLSessionDataDelegate {
+final class EventSourceDelegate: NSObject, URLSessionDataDelegate, @unchecked Sendable {
     private let delegateQueue: DispatchQueue = DispatchQueue(label: "ESDelegateQueue")
     private let log: Logger
 

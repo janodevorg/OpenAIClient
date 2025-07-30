@@ -1,5 +1,5 @@
 import Foundation
-import OpenAIAPI
+@preconcurrency import OpenAIAPI
 
 public protocol OpenAIClientProtocol {
     /// True if credentials are not nil or empty.
@@ -56,7 +56,7 @@ public protocol OpenAIClientProtocol {
      */
     func streamingCompletion(
         request: CreateCompletionRequest,
-        streamListener: @escaping ([CompletionChunk]) throws -> Void
+        streamListener: @escaping @Sendable ([CompletionChunk]) throws -> Void
     ) throws -> StreamingClient
     
     /**
@@ -90,7 +90,7 @@ public protocol OpenAIClientProtocol {
      - Throws: APIError
      */
     func streamingChatCompletion(
-        streamListener: @escaping ([ChatChunk]) throws -> Void,
+        streamListener: @escaping @Sendable ([ChatChunk]) throws -> Void,
         modelId: String,
         conversation: [ChatCompletionRequestMessage]
     ) throws -> StreamingClient
@@ -280,7 +280,7 @@ public protocol OpenAIClientProtocol {
      */
     func streamingListFineTuneEvents(
         id: String,
-        streamListener: @escaping ([FineTuneEvent]) throws -> Void
+        streamListener: @escaping @Sendable ([FineTuneEvent]) throws -> Void
     ) async throws -> StreamingClient
 
     /**
