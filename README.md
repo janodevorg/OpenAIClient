@@ -1,5 +1,7 @@
 [![Swift](https://github.com/janodevorg/OpenAIAPI/actions/workflows/swift.yml/badge.svg)](https://github.com/janodevorg/OpenAIAPI/actions/workflows/swift.yml) [![MIT license](http://img.shields.io/badge/license-MIT-lightgrey.svg)](http://opensource.org/licenses/MIT)
 
+This was a full implementation two years ago. Better use [AIProxy](https://github.com/lzell/AIProxySwift) now.
+
 # OpenAIClient
 
 Full implementation of the OpenAI API in Swift. 
